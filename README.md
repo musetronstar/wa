@@ -43,6 +43,6 @@ A history file is also written:
     S 2013-05-13-07:32:07 http://www.hypermega.com
 
 The 'S' indicates a single file download.
-An 'M' would indicated a mirrored download.
+An 'M' indicates a mirrored download.
 
 Enjoy...
