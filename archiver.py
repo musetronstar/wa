@@ -33,10 +33,10 @@ class archiver:
 		hostdir = self.path + '/' + '/'.join(ht)
 
 		# mirror creates path part
-		if not self.config.isopt('mirror'):	
+		if not self.config.isopt('mirror'):
 			pp = pu.path.rpartition('/')
-			if len(pp[0]):
-				hostdir += pp[0]
+                        # NAME_MAX is 255 for most linuxes (~140 using eCryptfs)
+                        hostdir += (pp[0][:137] + '~') if len(pp[0]) > 140 else pp[0]
 
 		if not ( os.path.isdir(hostdir) or os.path.isfile(hostdir) ):
 			os.makedirs(hostdir)
