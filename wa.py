@@ -39,11 +39,9 @@ for url in args[:]:
 
 	if stat > 0:
 		print >> sys.stderr, "wa %s failed" % url
-		hist.close()
-		exit(stat)
-
-	hist.write(arctype + ' ' + strftime('%Y-%m-%d-%X') + ' ' + url + '\n')
-	count = count + 1
+	else:
+		hist.write(arctype + ' ' + strftime('%Y-%m-%d-%X') + ' ' + url + '\n')
+		count = count + 1
 
 hist.close()
 print "%d urls archived" % count
