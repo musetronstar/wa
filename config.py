@@ -3,35 +3,33 @@
 
 import os
 
-class config: 
-	def __init__(self):
-		home = os.environ['HOME']
-		config_file = home + "/.warc"
 
-		# default configs
-		self.CONFIG = {
-			'wapath' :	home + '/var/wa',
-			'preserve' :	False
-		} 
+class config:
+    def __init__(self):
+        home = os.environ['HOME']
+        config_file = home + "/.warc"
 
-		if os.path.isfile(config_file):
-			for line in open(config_file):
-				line = line.strip()
-				key, val = line.split('=')
-				key  = key.rstrip()
-				val = val.lstrip()
-				self.CONFIG[key] = val	
+        # default configs
+        self.CONFIG = {'wapath': home + '/var/wa', 'preserve': False}
 
-	def getopt(self, key):
-		if not self.CONFIG.has_key(key):
-			return False
-		return self.CONFIG[key]
+        if os.path.isfile(config_file):
+            for line in open(config_file):
+                line = line.strip()
+                key, val = line.split('=')
+                key = key.rstrip()
+                val = val.lstrip()
+                self.CONFIG[key] = val
 
-	def setopt(self, key, val):
-		self.CONFIG[key] = val
+    def getopt(self, key):
+        if not key in self.CONFIG:
+            return False
+        return self.CONFIG[key]
 
-	def isopt(self, key):
-		if self.CONFIG.has_key(key):
-			return True
-		else:
-			return False
+    def setopt(self, key, val):
+        self.CONFIG[key] = val
+
+    def isopt(self, key):
+        if key in self.CONFIG:
+            return True
+        else:
+            return False
