@@ -1,3 +1,6 @@
 # pycache, etc.
 *.pyc
 __*
+
+# any hidden files
+.*

@@ -20,7 +20,6 @@ conf = config()
 # archive type S = single file, P = preserve (all reqs), M = mirror
 arctype = 'S'
 
-# TODO implement -p --preserver option
 for opt in opts[:]:
     if opt[0] == '-p':
         conf.setopt('preserve', True)
@@ -28,11 +27,10 @@ for opt in opts[:]:
     elif opt[0] == '-m':
         conf.setopt('mirror', True)
         arctype = 'M'
+conf.setopt('arctype', arctype)
 
 wa = archiver()
 wa.setconfig(conf)
-historyfile = conf.getopt('wapath') + "/.history"
-hist = open(historyfile, 'a')
 
 count = 0
 for url in args[:]:
@@ -41,8 +39,6 @@ for url in args[:]:
     if stat > 0:
         print("wa %s failed" % url, file=sys.stderr)
     else:
-        hist.write(arctype + ' ' + strftime('%Y-%m-%d-%X') + ' ' + url + '\n')
         count = count + 1
 
-hist.close()
 print("%d urls archived" % count)

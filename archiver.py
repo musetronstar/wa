@@ -2,28 +2,29 @@
 # http://creativecommons.org/publicdomain/zero/1.0/
 
 import os
+import subprocess
 from urllib.parse import urlencode
 from urllib.parse import urlparse
-
 
 class archiver:
     def __init__(self):
         self.path = "./"
         self.res = None
         self.config = None
-        self.wgetopts = ['-nH --no-check-certificate']
+        self.wgetopts = ['-nH', '--no-check-certificate']
 
     def setconfig(self, conf):
+        self.arctype = conf.getopt('arctype')
         if conf.isopt('wapath'):
             self.path = conf.getopt('wapath')
         if conf.getopt('preserve'):
             self.wgetopts.append('-p')
         elif conf.getopt('mirror'):
-            self.wgetopts.append(
-                '--mirror --no-parent -nH -erobots=off --timeout=5 --tries=2 --convert-links -p'
+            self.wgetopts.extend(
+                ['--mirror', '--no-parent', '-nH', '--erobots=off', '--timeout=5', '--tries=2', '--convert-links', '-p']
             )
         if conf.isopt('user_agent'):
-            self.wgetopts.append('-U "' + conf.getopt('user_agent') + '"')
+            self.wgetopts.extend(['-U', conf.getopt('user_agent')])
         self.config = conf
 
     def fetch(self, url):
@@ -32,18 +33,41 @@ class archiver:
         ht = hp[0].split('.')
         ht.reverse()
         hostdir = self.path + '/' + '/'.join(ht)
+        archdir = hostdir
 
         # mirror creates path part
         if not self.config.isopt('mirror'):
             pp = pu.path.rpartition('/')
             # NAME_MAX is 255 for most linuxes (~140 using eCryptfs)
-            hostdir += (pp[0][:137] + '~') if len(pp[0]) > 140 else pp[0]
+            archdir += (pp[0][:137] + '~') if len(pp[0]) > 140 else pp[0]
 
-        if not (os.path.isdir(hostdir) or os.path.isfile(hostdir)):
-            os.makedirs(hostdir)
+        if os.path.isdir(archdir):
+            pass
+        else:
+            try:
+                os.makedirs(archdir)
+            except NotADirectoryError:
+                # previous archive wrote a file
+                # that we now know should be a directory
+                # so, convert file to dir and copy file dir/index.wa
+                while not os.path.isdir(archdir):
+                    if len(hostdir) > len(archdir):
+                        raise IOError("Cannot create directory " + archdir + " for: " + url)
+                    if os.path.isfile(archdir):
+                        tmp = self.path + "/.tmp"
+                        os.rename(archdir, tmp)
+                        os.makedirs(archdir)
+                        os.rename(tmp, archdir + '/index.wa')
+                        break
+                    pp = archdir.rpartition('/')
+                    archdir = pp[0]
+                if not os.path.isdir(archdir):
+                    raise IOError("Failed to create directory " + archdir + " for: " + url)
 
-        self.wgetopts.append('-P ' + hostdir)
-        cmd = 'wget ' + ' '.join(self.wgetopts) + ' "' + url + '"'
-        #print cmd
-        stat = os.system(cmd)
+        cmd = ['wget-save.sh', self.path, self.arctype]
+        cmd.extend(self.wgetopts)
+        cmd.extend(['-P', archdir])
+        cmd.append(url)
+        #print('cmd: ', cmd)
+        stat = subprocess.call(cmd)
         return stat

@@ -3,7 +3,6 @@
 
 import os
 
-
 class config:
     def __init__(self):
         home = os.environ['HOME']
