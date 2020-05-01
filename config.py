@@ -9,15 +9,21 @@ class config:
         config_file = home + "/.warc"
 
         # default configs
-        self.CONFIG = {'wapath': home + '/var/wa', 'preserve': False}
+        self.CONFIG = {'preserve': False}
+
+        if 'WAPATH' in os.environ:
+            self.CONFIG['wapath'] = os.environ['WAPATH']
+        else:
+            self.CONFIG['wapath'] = home + '/var/wa'
 
         if os.path.isfile(config_file):
-            for line in open(config_file):
-                line = line.strip()
-                key, val = line.split('=')
-                key = key.rstrip()
-                val = val.lstrip()
-                self.CONFIG[key] = val
+            with open(config_file) as file_in:
+                for line in file_in:
+                    line = line.strip()
+                    key, val = line.split('=')
+                    key = key.rstrip()
+                    val = val.lstrip()
+                    self.CONFIG[key] = val
 
     def getopt(self, key):
         if not key in self.CONFIG:
