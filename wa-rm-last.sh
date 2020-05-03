@@ -13,11 +13,10 @@ fi
 
 history_file="${wapath}/.history"
 
-# .history format
-# arctype date url path
-# awk everthing after col 3, sed strip leading space
-path=$(tail -n 1 "$history_file" | awk '{$1=$2=$3=""; print $0}' | sed -e 's/^[[:space:]]*//')
-rm "$path"
+# .history format (tsv)
+# date	arctype	url	rel_path
+path="${wapath}/$(tail -n 1 "$history_file" | awk -F "\t" '{print $4}')"
+rm -v "$path"
 
 # delete last line
 sed -i '$ d' "$history_file"

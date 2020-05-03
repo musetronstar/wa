@@ -58,12 +58,21 @@ wget "$@" 2>&1 | tee $TMP
 #	‘	LEFT SINGLE QUOTATION MARK	\u2018
 #	’	RIGHT SINGLE QUOTATION MARK	\u2019
 saved=$(grep 'saved' $TMP | sed -n 's/^.*‘\(.*\)’.*$/\1/p')
+pos=
+if [ "${pos: -1}" == '/' ]; then
+   	pos=${#wapath}
+else
+	pos=$(expr ${#wapath} + 1)
+fi
+
+ # relative path of saved file inside wapath
+rsaved=${saved:$pos}
 
 # history file format:
-# S 2020-04-05-11:09:11 http://example.com/file.html /wapath/com/example/file.html
+# 2020-04-05-11:09:11	S	http://example.com/file.html	/wapath/com/example/file.html
 if [ ! -z "$saved" ]; then
 	history_file="${wapath}/.history"
-	echo "$arctype $(date +%F-%T) ${url} ${saved}" >> $history_file
+	echo "$(date +%F-%T)	$arctype	$url	$rsaved" >> $history_file
 fi
 
 rm $TMP
