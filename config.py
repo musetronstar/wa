@@ -3,6 +3,10 @@
 
 import os
 
+# script directory
+def realdir():
+    return os.path.dirname(os.path.realpath(__file__))
+
 class config:
     def __init__(self):
         home = os.environ['HOME']

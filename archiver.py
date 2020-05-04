@@ -5,6 +5,7 @@ import os
 import subprocess
 from urllib.parse import urlencode
 from urllib.parse import urlparse
+import config
 
 class archiver:
     def __init__(self):
@@ -64,7 +65,8 @@ class archiver:
                 if not os.path.isdir(archdir):
                     raise IOError("Failed to create directory " + archdir + " for: " + url)
 
-        cmd = ['wget-save.sh', self.path, self.arctype]
+        wget_save = config.realdir() + '/wget-save.sh'
+        cmd = [wget_save, self.path, self.arctype]
         cmd.extend(self.wgetopts)
         cmd.extend(['-P', archdir])
         cmd.append(url)
