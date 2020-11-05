@@ -22,7 +22,7 @@ class archiver:
             self.wgetopts.append('-p')
         elif conf.getopt('mirror'):
             self.wgetopts.extend(
-                ['--mirror', '--no-parent', '-nH', '--erobots=off', '--timeout=5', '--tries=2', '--convert-links', '-p']
+                ['--mirror', '--no-parent', '-nH', '--timeout=5', '--tries=2', '--convert-links', '-p']
             )
         if conf.isopt('user_agent'):
             self.wgetopts.extend(['-U', conf.getopt('user_agent')])
