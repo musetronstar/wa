@@ -1,0 +1,23 @@
+#!/bin/bash
+# archive the given youtube, etc. webpage and its video+audio stream
+
+set -e  # exit on failure
+
+# youtube url, ex: https://www.youtube.com/watch?v=kkGeOWYOFo
+YT_URL=$1
+wa "$YT_URL"
+
+# get video+audio stream URL, ex:
+# https://r4---sn-uvujvg-qh3e.googlevideo.com/videoplayback?expire=1553968942&id=o-AOo8BdcJ2rURBvTUcmoXsTR2gs7PcNBdbGHMMzaUlAx6&ms=au%2Crdu&mt=1553947291&mv=m&source=youtube&mm=31%2C29&mn=sn-uvujvg-qh3e%2Csn-30a7rn7l&pl=24&requiressl=yes&ip=1.179.181.178&mime=video%2Fmp4&pcm2cms=yes&ei=zlqfXK-QJ7uEz7sP48W6gAU&sparams=dur%2Cei%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cpcm2cms%2Cpl%2Cratebypass%2Crequiressl%2Csource%2Cexpire&lmt=1540988240975360&dur=223.956&fvip=4&initcwndbps=648750&c=WEB&itag=22&ipbits=0&ratebypass=yes&txp=5431432&key=yt6&signature=437DFB767DEF654AF114BF13AEB6B39E0DCFF8E5.ADB935EC83C4A5DC19B1BDAC0CECFE8405DD5D22"
+
+VID_URL=$(python3 $HOME/bin/youtube-dl -f best -g "$YT_URL")
+
+# parse video id (e.g. 'kkGeOWYOFo' from 'https://www.youtube.com/watch?v=kkGeOWYOFo')
+V_ID=$(echo $YT_URL | awk -F '?' '{ print $2 }' | sed 's/v=//')
+
+# insert youtube video id as first param in video stream URL
+# so we can related the to URLs, as the end of the video stream URL
+# may be truncated when used as a filename saved to disk
+VID_ID=$(echo $VID_URL | awk -F '?' -v v_id="$V_ID" '{ printf "%s?video_id=%s&%s", $1, v_id, $2 }')
+
+wa "$VID_ID"

@@ -12,7 +12,7 @@ class archiver:
         self.path = "./"
         self.res = None
         self.config = None
-        self.wgetopts = ['-nH', '--no-check-certificate']
+        self.wgetopts = ['-nH', '--no-check-certificate', '--timeout=5', '--tries=2']
 
     def setconfig(self, conf):
         self.arctype = conf.getopt('arctype')
@@ -22,7 +22,7 @@ class archiver:
             self.wgetopts.append('-p')
         elif conf.getopt('mirror'):
             self.wgetopts.extend(
-                ['--mirror', '--no-parent', '-nH', '--timeout=5', '--tries=2', '--convert-links', '-p']
+                ['--mirror', '--no-parent', '-nH', '--convert-links', '-p']
             )
         if conf.isopt('user_agent'):
             self.wgetopts.extend(['-U', conf.getopt('user_agent')])
@@ -65,7 +65,7 @@ class archiver:
                 if not os.path.isdir(archdir):
                     raise IOError("Failed to create directory " + archdir + " for: " + url)
 
-        wget_save = config.realdir() + '/wget-save.sh'
+        wget_save = config.realdir() + '/wget-save'
         cmd = [wget_save, self.path, self.arctype]
         cmd.extend(self.wgetopts)
         cmd.extend(['-P', archdir])

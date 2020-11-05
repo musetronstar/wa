@@ -1,0 +1,7 @@
+#!/bin/bash
+# web archive a file of one non-duplicate URL per line
+
+cat $1	\
+	| perl -e 'while(<>){print if !$lines{$_}++}' \
+	| tr '\n' '\0'	\
+	| xargs -0 wa
