@@ -8,11 +8,17 @@ from urllib.parse import urlparse
 import config
 
 class archiver:
-    def __init__(self):
+    def __init__(self, conf, tags=None):
         self.path = "./"
         self.res = None
-        self.config = None
-        self.wgetopts = ['-nH', '--no-check-certificate', '--timeout=5', '--tries=2']
+        self.tags = tags
+        self.wgetopts = [
+            '-nH', '--no-check-certificate', '--timeout=5',
+            '--tries=2',
+            # workaround - OpenSSL: error:141A318A:SSL routines:tls_process_ske_dhe:dh key too small
+            '--ciphers=DEFAULT:!DH'
+        ]
+        self.setconfig(conf)
 
     def setconfig(self, conf):
         self.arctype = conf.getopt('arctype')
@@ -67,6 +73,9 @@ class archiver:
 
         wget_save = config.realdir() + '/wget-save'
         cmd = [wget_save, self.path, self.arctype]
+        print("tags:",self.tags)
+        if self.tags:
+            cmd.extend(['-t', self.tags])
         cmd.extend(self.wgetopts)
         cmd.extend(['-P', archdir])
         cmd.append(url)
