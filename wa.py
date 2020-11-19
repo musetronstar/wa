@@ -14,25 +14,23 @@ def usage():
     print("wa.py [-p] http://example.com")
     sys.exit(0)
 
-opts, args = getopt(sys.argv[1:], 'pm:t:')
+opts, args = getopt(sys.argv[1:], 'pm')
 conf = config()
 
 # archive type S = single file, P = preserve (all reqs), M = mirror
 arctype = 'S'
 
-tags=None
-for opt in opts:
+for opt in opts[:]:
     if opt[0] == '-p':
         conf.setopt('preserve', True)
         arctype = 'P'
     elif opt[0] == '-m':
         conf.setopt('mirror', True)
         arctype = 'M'
-    elif opt[0] == '-t':
-        tags = opt[1]
-
 conf.setopt('arctype', arctype)
-wa = archiver(conf, tags)
+
+wa = archiver()
+wa.setconfig(conf)
 
 count = 0
 for url in args[:]:

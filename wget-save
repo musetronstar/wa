@@ -1,12 +1,10 @@
 #!/bin/bash
 
-echo "$@"
-
 function usage {
 
 	PRG=$(basename $0)
 echo "usage:
-	$PRG <wapath> <arctype> [-t tags] [wget-opts ...] <url>
+	$PRG <wapath> <arctype> [wget-opts ...] <url>
 
 where <arctype> is one of:
 	S	single file
@@ -43,16 +41,7 @@ fi
 
 shift # arctype not passed to wget
 
-# optional tags must be comma delimmited and NOT containing whitespace
-tags=
-if [ "$1" == '-t' ]; then
-	tags=$2
-	shift
-	shift
-fi
-
-# last args can be: [wget_opts] url
-url=${!#}
+url=${!#}  # must be last arg
 if [ -z $url ]; then
    	echo "url required" >&2
 	usage
@@ -80,13 +69,10 @@ fi
 rsaved=${saved:$pos}
 
 # history file format:
-# 2020-04-05-11:09:11	S	http://example.com/file.html	/wapath/com/example/file.html tags
-# where tags are: [tag1[,tag2..,tagn]]
+# 2020-04-05-11:09:11	S	http://example.com/file.html	/wapath/com/example/file.html
 if [ ! -z "$saved" ]; then
 	history_file="${wapath}/.history"
-	rec="$arctype	$url	$rsaved"
-	[ -n $tags ] && rec="$rec	$tags"
-	echo "$(date +%F-%T)	$rec" >> $history_file
+	echo "$(date +%F-%T)	$arctype	$url	$rsaved" >> $history_file
 fi
 
 rm $TMP
