@@ -25,9 +25,7 @@ class config:
                 for line in file_in:
                     line = line.strip()
                     key, val = line.split('=')
-                    key = key.rstrip()
-                    val = val.lstrip()
-                    self.CONFIG[key] = val
+                    self.CONFIG[key.rstrip()] = val.rstrip()
 
     def getopt(self, key):
         if not key in self.CONFIG:
