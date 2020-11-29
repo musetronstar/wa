@@ -1,0 +1,40 @@
+#!/bin/bash
+# archive the given webpage and its video+audio stream
+
+set -e  # exit on failure
+
+# optional directory override
+dir=
+if [ "$1" == '-d' ]; then
+	dir="-d \"$2\""
+	shift && shift
+fi
+
+# optional tags must be comma delimmited and NOT containing whitespace
+tags=
+if [ "$1" == '-t' ]; then
+	tags="-t $2"
+	shift && shift
+fi
+
+# youtube url, ex: https://www.youtube.com/watch?v=wZITscblMBA
+URL=$1
+wa $dir $tags "$URL"
+
+# get video+audio stream URL, ex:
+# https://r5---sn-npoe7ney.googlevideo.com/videoplayback?video_id=wZITscblMBA&expire=1606645343&ei=_yHDX-034Y7Puw-k2avYCw&ip=2001%3Afb1%3A104%3Afbce%3Ac56a%3Aa9e7%3A2cb6%3A349d&id=o-ADQfSTbnv1CGviuEb4PE3aFA3sAQT-QLhmuwyK2-3t5k&itag=22&source=youtube&requiressl=yes&vprv=1&mime=video%2Fmp4&ns=Qg-GGQ8DMdZgWehfeTCWUTQF&ratebypass=yes&dur=4850.021&lmt=1603612248292678&fvip=5&c=WEB&txp=5432434&n=re7VCuCF9L3AaU7QNcd&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cns%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRQIhAIuaMRgsPC_WJDwRn6rNAb85yXR4yz0zDXE7CwLuMaeoAiASjKwSm2RGZED8eOyd_l_fZG3yQ7SSlwCwysFKhAJT_g%3D%3D&cm2rm=sn-5np5po4v-joml76,sn-30als76&req_id=3f1f5ac75444a3ee&redirect_counter=2&cms_redirect=yes&mh=NO&mm=34&mn=sn-npoe7ney&ms=ltu&mt=1606623629&mv=m&mvi=5&pl=48&lsparams=mh,mm,mn,ms,mv,mvi,pl&lsig=AG3C_xAwRQIhAKh197eI_lVgfbkfbLUwSKEhWl2GJQbZMzyR4RWuI7TzAiAfmUNF2pvbKEPBccqro_21XmeCsQ5njf6AiiaqvZUSOw%3D%3D
+
+# video downloader and options
+# VID_DL="python3 $HOME/bin/youtube-dl -f best -g"
+VID_DL="${HOME}/.local/bin/haruhi-dl -f best -g"
+VID_URL=$($VID_DL "$URL")
+
+# parse video id (e.g. 'wZITscblMBA' from 'https://www.youtube.com/watch?v=wZITscblMBA')
+V_ID=$(echo $URL | awk -F '?' '{ print $2 }' | sed 's/v=//')
+
+# insert youtube video id as first param in video stream URL
+# so we can related the to URLs, as the end of the video stream URL
+# may be truncated when used as a filename saved to disk
+VID_ID=$(echo $VID_URL | awk -F '?' -v v_id="$V_ID" '{ printf "%s?video_id=%s&%s", $1, v_id, $2 }')
+
+wa "$VID_ID"

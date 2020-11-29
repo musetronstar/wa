@@ -1,7 +1,21 @@
 #!/bin/bash
 # web archive a file of one non-duplicate URL per line
 
+# optional directory override
+dir=
+if [ "$1" == '-d' ]; then
+	dir="-d \"$2\""
+	shift && shift
+fi
+
+# optional tags must be comma delimmited and NOT containing whitespace
+tags=
+if [ "$1" == '-t' ]; then
+	tags="-t $2"
+	shift && shift
+fi
+
 cat $1	\
-	| perl -e 'while(<>){print if !$lines{$_}++}' \
+	| perl -e 'while(<>){print if !$ln{$_}++}' \
 	| tr '\n' '\0'	\
-	| xargs -0 wa
+	| xargs -0 wa $dir $tags

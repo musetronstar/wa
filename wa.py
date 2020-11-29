@@ -14,23 +14,31 @@ def usage():
     print("wa.py [-p] http://example.com")
     sys.exit(0)
 
-opts, args = getopt(sys.argv[1:], 'pm')
+<<<<<<< HEAD
+opts, args = getopt(sys.argv[1:], 'pm:t:d:')
+=======
+opts, args = getopt(sys.argv[1:], 'pm:t:')
+>>>>>>> 3773c644b3bf1fab33566fd12eaa112fc3b02f2c
 conf = config()
 
 # archive type S = single file, P = preserve (all reqs), M = mirror
 arctype = 'S'
 
-for opt in opts[:]:
+tags=None
+for opt in opts:
     if opt[0] == '-p':
         conf.setopt('preserve', True)
         arctype = 'P'
     elif opt[0] == '-m':
         conf.setopt('mirror', True)
         arctype = 'M'
-conf.setopt('arctype', arctype)
+    elif opt[0] == '-d':  # override default wapath
+        conf.setopt('wapath', opt[1])
+    elif opt[0] == '-t':  # list of CSV tags, no whitespace
+        tags = opt[1]
 
-wa = archiver()
-wa.setconfig(conf)
+conf.setopt('arctype', arctype)
+wa = archiver(conf, tags)
 
 count = 0
 for url in args[:]:
