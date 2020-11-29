@@ -14,11 +14,7 @@ def usage():
     print("wa.py [-p] http://example.com")
     sys.exit(0)
 
-<<<<<<< HEAD
 opts, args = getopt(sys.argv[1:], 'pm:t:d:')
-=======
-opts, args = getopt(sys.argv[1:], 'pm:t:')
->>>>>>> 3773c644b3bf1fab33566fd12eaa112fc3b02f2c
 conf = config()
 
 # archive type S = single file, P = preserve (all reqs), M = mirror
