@@ -73,12 +73,10 @@ class archiver:
 
         wget_save = config.realdir() + '/wget-save'
         cmd = [wget_save, self.path, self.arctype]
-        print("tags:",self.tags)
         if self.tags:
             cmd.extend(['-t', self.tags])
         cmd.extend(self.wgetopts)
         cmd.extend(['-P', archdir])
         cmd.append(url)
-        #print('cmd: ', cmd)
         stat = subprocess.call(cmd)
         return stat
