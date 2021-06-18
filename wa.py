@@ -1,4 +1,13 @@
 #!/usr/bin/python3
+"""
+    usage:
+        wa [-p] [-m] [-d] [-t CSV,tag,list] <URL1> [URL2...]")
+    options:
+        -p    preserve (download dependencies)
+        -m    mirror authority/path
+        -d    override wapath
+        -t    comma seperated list of tags
+"""
 
 # This software is committed to the public domain (CCO)
 # http://creativecommons.org/publicdomain/zero/1.0/
@@ -10,11 +19,11 @@ from time import strftime
 import sys
 
 
-def usage():
-    print("wa.py [-p] http://example.com")
+def die_usage():
+    print(__doc__)
     sys.exit(0)
 
-opts, args = getopt(sys.argv[1:], 'pm:t:d:')
+opts, args = getopt(sys.argv[1:], 'hpm:t:d:')
 conf = config()
 
 # archive type S = single file, P = preserve (all reqs), M = mirror
@@ -22,6 +31,8 @@ arctype = 'S'
 
 tags=None
 for opt in opts:
+    if opt[0] == '-h':
+        die_usage()
     if opt[0] == '-p':
         conf.setopt('preserve', True)
         arctype = 'P'
@@ -35,14 +46,18 @@ for opt in opts:
 
 conf.setopt('arctype', arctype)
 wa = archiver(conf, tags)
+urls = args[:]
+
+if len(urls) == 0:
+    die_usage()
 
 count = 0
-for url in args[:]:
+for url in urls:
     stat = wa.fetch(url)
 
     if stat > 0:
         print("wa %s failed" % url, file=sys.stderr)
     else:
-        count = count + 1
+        count += 1
 
-print("%d urls archived" % count)
+print("%i urls archived" % count)

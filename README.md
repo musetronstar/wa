@@ -1,48 +1,54 @@
 wa
 ==
 
-http or ftp web file archiver written in python
+Web file archiver written in Python
 
-wa (web archiver) is a simple python program that uses wget to download http
-or ftp resources and store them in a directory heirarchy according to the
-hostname and the path of the URL.
+wa (web archiver) uses wget to download resources and store them in a
+directory heirarchy according to the hostname and the path of the URL.
 
-To install, download the source to a directory or your choice (for example,
-~/src).  Then make a soft link to the executable to a something in your path,
-for example:
+To install, download the source to a directory (e.g. `~/src/`)
+or your choice and run the install script, which will make soft links
+to the executables in your path.
 
-    ln -s ~/src/wa/wa.py ~/bin/wa
+    cd ~/src
+	./install.sh
+
+or,
+
+	./install /path/to/bin  # override default
 
 The web archive directory, <wapath>, is by default ~/var/wa.  This can be
 changed by creating a file ~/.warc and defining another path:
 
     wapath = /some/other/dir
 
-A command line switch -m can be added to mirror a request.  Be careful,
-all dependencies will be downloaded recursively.
+The command line switch -m will mirror a request *recursivily*
+from the authority/path.  Use carefully.
 
 The directory heirarchy in the form:
 
     <wapath>/<tld>/<private>/<subdomain>/<path>/<file>
 
-For example (using default wapath):
-
-    $ wa http://www.hypermega.com
-    ...
-
+## Web archive example
+Fetches and stores files in wapath (default ~/var/wa)
     $ tree ~/var/wa
-    /home/icolley/var/wa
+    /home/musetronstar/var/wa
     └── com
-        └── hypermega
+        └── example
             └── www
                 └── index.html
                 
-A history file is also written:
+    $ wa -t archive,test http://www.example.com
+    ...
 
-    $ cat ~/var/wa/.history 
-    S 2013-05-13-07:32:07 http://www.hypermega.com
+A history file is written in the form:
+	<DATE>	<TYPE>	<URL>	<PATH>	<TAGS>
 
-The 'S' indicates a single file download.
-An 'M' indicates a mirrored download.
+    $ tail -n 1 ~/var/wa/.history 
+	2021-06-18-11:54:00	S	http://example.com	com/example/index.html	archive,test
 
-Enjoy...
+### Archive Types
+* 'S' single file download
+* 'M' mirror
+
+This software is in the public domain.
