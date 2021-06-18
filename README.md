@@ -43,6 +43,7 @@ Fetches and stores files in wapath (default ~/var/wa):
     ...
 
 A history file is written in the form:
+
 	<DATE>	<TYPE>	<URL>	<PATH>	<TAGS>
 
     $ tail -n 1 ~/var/wa/.history 
