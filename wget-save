@@ -70,7 +70,7 @@ wget "$@" 2>&1 | tee $TMP
 #	’	RIGHT SINGLE QUOTATION MARK	\u2019
 saved=$(grep 'saved' $TMP | sed -n 's/^.*‘\(.*\)’.*$/\1/p')
 pos=
-if [ "${pos: -1}" == '/' ]; then
+if [ "${saved: -1}" == '/' ]; then
    	pos=${#wapath}
 else
 	pos=$(expr ${#wapath} + 1)
