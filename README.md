@@ -17,13 +17,13 @@ or,
 
 	./install /path/to/bin  # override default
 
-The web archive directory, <wapath>, is by default ~/var/wa.  This can be
-changed by creating a file ~/.warc and defining another path:
+The web archive directory, `wapath`, is by default `~/var/wa`.  This can be
+changed by creating a file `~/.warc` and defining another path:
 
     wapath = /some/other/dir
 
-The command line switch -m will mirror a request *recursivily*
-from the authority/path.  Use carefully.
+The `-m` command line switch will mirror a request *recursivily*
+from the authority/path, so use carefully.
 
 The directory heirarchy in the form:
 
