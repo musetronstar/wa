@@ -30,7 +30,8 @@ The directory heirarchy in the form:
     <wapath>/<tld>/<private>/<subdomain>/<path>/<file>
 
 ## Web archive example
-Fetches and stores files in wapath (default ~/var/wa)
+Fetches and stores files in wapath (default ~/var/wa):
+
     $ tree ~/var/wa
     /home/musetronstar/var/wa
     └── com
