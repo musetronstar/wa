@@ -37,4 +37,4 @@ V_ID=$(echo $URL | awk -F '?' '{ print $2 }' | sed 's/v=//')
 # may be truncated when used as a filename saved to disk
 VID_ID=$(echo $VID_URL | awk -F '?' -v v_id="$V_ID" '{ printf "%s?video_id=%s&%s", $1, v_id, $2 }')
 
-wa "$VID_ID"
+wa $dir $tags "$VID_ID"
