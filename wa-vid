@@ -32,9 +32,11 @@ VID_URL=$($VID_DL "$URL")
 # parse video id (e.g. 'wZITscblMBA' from 'https://www.youtube.com/watch?v=wZITscblMBA')
 V_ID=$(echo $URL | awk -F '?' '{ print $2 }' | sed 's/v=//')
 
-# insert youtube video id as first param in video stream URL
-# so we can related the to URLs, as the end of the video stream URL
-# may be truncated when used as a filename saved to disk
-VID_ID=$(echo $VID_URL | awk -F '?' -v v_id="$V_ID" '{ printf "%s?video_id=%s&%s", $1, v_id, $2 }')
+if [ -n "$V_ID" ]; then
+	# insert youtube video id as first param in video stream URL
+	# so we can related the to URLs, as the end of the video stream URL
+	# may be truncated when used as a filename saved to disk
+	VID_URL=$(echo $VID_URL | awk -F '?' -v v_id="$V_ID" '{ printf "%s?video_id=%s&%s", $1, v_id, $2 }')
+fi
 
-wa $dir $tags "$VID_ID"
+wa $dir $tags "$VID_URL"
