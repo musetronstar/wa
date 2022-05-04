@@ -1,0 +1,11 @@
+#!/bin/bash
+
+wapath=~/var/wa  # default
+[ -n "$WAPATH" ] && wapath="$WAPATH"
+
+history_file="${wapath}/.history"
+
+# .history format (tsv)
+# date	arctype	url	rel_path	tags
+path="${wapath}/$(tail -n 1 "$history_file" | awk -F "\t" '{print $4}')"
+echo "$path"

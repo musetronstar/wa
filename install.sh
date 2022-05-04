@@ -6,6 +6,7 @@
 
 if [ -z "$1" ]; then
 	BIN=$HOME/bin
+	[ -d "$BIN" ] || mkdir -v "$BIN"
 else
 	BIN="$1"
 fi
@@ -13,6 +14,4 @@ fi
 SRC=$(dirname $(realpath $0))
 
 ln -s ${SRC}/wa.py ${BIN}/wa
-ln -s ${SRC}/wa-file ${BIN}/wa-file
-ln -s ${SRC}/wa-rm-last ${BIN}/wa-rm-last
-ln -s ${SRC}/wa-vid ${BIN}/wa-vid
+ln -s ${SRC}/bin/* ${BIN}/

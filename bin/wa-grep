@@ -1,0 +1,9 @@
+#!/bin/bash -x
+# egreps wa history file, passing command arguments
+
+wapath=~/var/wa  # default
+[ -n "$WAPATH" ] && wapath="$WAPATH"
+
+history_file="${wapath}/.history"
+
+egrep "$@" $history_file
