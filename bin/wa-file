@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # web archive a file of one non-duplicate URL per line
 
 # optional directory override
@@ -15,7 +15,7 @@ if [ "$1" == '-t' ]; then
 	shift && shift
 fi
 
-cat $1	\
+awk NF $1	\
 	| perl -e 'while(<>){print if !$ln{$_}++}' \
 	| tr '\n' '\0'	\
 	| xargs -0 wa $dir $tags
