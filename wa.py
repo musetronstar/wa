@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 """
+    Downloads Web resources to an archive directory and maintains a history log.
+
     usage:
-        wa [-p] [-m] [-d] [-t CSV,tag,list] <URL1> [URL2...]")
+        wa [-p] [-m] [-d] [-t CSV,tag,list] <URL1> [URL2...]
+
     options:
         -p    preserve (download dependencies)
         -m    mirror authority/path
         -d    override wapath
-        -t    comma seperated list of tags
+        -t    comma seperated list of tags without whitespace
 """
 
 # This software is committed to the public domain (CCO)

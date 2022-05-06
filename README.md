@@ -48,6 +48,17 @@ The directory heirarchy in the form:
 
     <wapath>/<tld>/<private>/<subdomain>/<path>/<file>
 
+## Usage and Options
+
+    usage:
+        wa [-p] [-m] [-d] [-t CSV,tag,list] <URL1> [URL2...]
+
+    options:
+        -p    preserve (download dependencies)
+        -m    mirror authority/path
+        -d    override wapath
+        -t    comma seperated list of tags without whitespace
+
 ## Web archive example
 Fetches and stores files in wapath (default ~/var/wa):
 
@@ -67,7 +78,8 @@ A history file is written in the form:
     $ tail -n 1 ~/var/wa/.history 
 	2021-06-18-11:54:00	S	http://example.com	com/example/index.html	archive,test
 
-### Archive Types
+### History Archive Types
+
 * 'S' single file download
 * 'M' mirror
 
