@@ -15,7 +15,7 @@ to the executables in your path.
 
 or,
 
-	./install /path/to/bin  # override default
+	./install.sh /path/to/bin  # override default
 
 The web archive directory, `wapath`, is by default `~/var/wa`.  This can be
 changed by creating a file `~/.warc` and defining another path:
@@ -32,16 +32,15 @@ The directory heirarchy in the form:
 ## Web archive example
 Fetches and stores files in wapath (default ~/var/wa):
 
-    $ tree ~/var/wa
+    wa -t archive,test http://www.example.com
+
+    tree ~/var/wa
     /home/musetronstar/var/wa
     └── com
         └── example
             └── www
                 └── index.html
                 
-    $ wa -t archive,test http://www.example.com
-    ...
-
 A history file is written in the form:
 
 	<DATE>	<TYPE>	<URL>	<PATH>	<TAGS>
