@@ -6,6 +6,8 @@ Web file archiver written in Python
 wa (web archiver) uses wget to download resources and store them in a
 directory heirarchy according to the hostname and the path of the URL.
 
+## Installation
+
 To install, download the source to a directory (e.g. `~/src/`)
 or your choice and run the install script, which will make soft links
 to the executables in your path.
@@ -17,11 +19,28 @@ or,
 
 	./install.sh /path/to/bin  # override default
 
-The web archive directory, `wapath`, is by default `~/var/wa`.  This can be
-changed by creating a file `~/.warc` and defining another path:
+### Uninstall
 
-    wapath = /some/other/dir
+    cd ~/src
+	./uninstall.sh
 
+or,
+
+	./uninstall.sh /path/to/bin  # override default
+
+## WAPATH
+
+The web archive directory is given by the environment variable `$WAPATH`.
+If not defined, it defaults to `~/var/wa`.
+
+## `.warc`
+
+If it exists, Python will read the file `~/wa.rc`
+where the following options can be defined
+
+    # sets a User Agent string
+    user_agent = User Agent String
+    
 The `-m` command line switch will mirror a request *recursivily*
 from the authority/path, so use carefully.
 
