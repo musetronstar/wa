@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 # egreps wa history file, passing command arguments
 
 wapath=~/var/wa  # default
