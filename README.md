@@ -35,7 +35,7 @@ If not defined, it defaults to `~/var/wa`.
 
 ## `.warc`
 
-If it exists, Python will read the file `~/wa.rc`
+If it exists, Python will read the file `~/.warc`
 where the following options can be defined
 
     # sets a User Agent string
