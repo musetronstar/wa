@@ -1,0 +1,125 @@
+#! /usr/bin/perl
+
+# reads lines of wa `.history` log file data from stdin
+# outputs TAGL to stdout
+# outputs errors to stderr
+
+use warnings;
+use strict;
+
+use constant WAPATH => $ENV{'WAPATH'} ? $ENV{'WAPATH'} : $ENV{'HOME'}.'/var/wa';
+
+# .history format (tsv)
+# date	arctype	url	rel_path	tags
+use constant DATE => 0;
+use constant ARC_TYPE => 1;
+use constant URL => 2;
+use constant REL_PATH => 3;
+use constant TAGS => 4;
+
+# url requisite files
+my @reqs;
+my $prev_url;
+
+sub print_error {
+	my $msg = shift;
+	my $data = shift;
+	printf STDERR "%i: %s: %s\n", $., $msg, $data;
+}
+
+use URI::Encode;
+my $URI_ENC = URI::Encode->new(
+	{
+		encode_reserved => 0,
+		double_encode => 0
+	}
+);
+
+sub uri_encode {
+	my $data = shift;
+	return $URI_ENC->encode($data);
+}
+
+sub tags_str {
+	my $tags = shift;
+	return  $tags ? ', tags = "'.$tags.'"' : '';
+}
+
+sub file_url_str {
+	my $rel_path = shift;
+	return  $rel_path ? ', file:///'.uri_encode($rel_path).' ' : '';
+}
+
+sub put_url {
+	my $row = shift;
+	return '>> '.uri_encode($row->[URL]).' _type_of wa:url'
+		. "\t".'wa:archived date = "'.$row->[DATE].'"'
+		. ', wa:type = "'.$row->[ARC_TYPE].'"'
+		. file_url_str($row->[REL_PATH])
+		. tags_str($row->[TAGS]);
+	# not terminitated ;
+}
+
+sub put_file {
+	my $row = shift;
+	return '>> file:///'.uri_encode($row->[REL_PATH]).' _type_of wa:file'
+	. "\t".'wa:archived date = "'.$row->[DATE].'"'
+	. ', wa:type = "'.$row->[ARC_TYPE].'"'
+	. tags_str($row->[TAGS])
+	. "\t".' wa:response_to '.uri_encode($row->[URL]).' ';
+	# not terminated ;
+
+}
+
+sub reqd_by_pred {
+	my $row = shift;
+	return ' required_by '.$row->[URL].' ';
+}
+
+sub reqs_pred {
+	my $reqs = shift;
+	if (@$reqs) {
+		my $i=0; # file index #i
+		my @files = map { ' file:///'.uri_encode($_) } @$reqs;
+		return "\twa:requires ".join(' , ', @files).' ';
+	} else {
+		return '';
+	}
+}
+
+my @prev;
+
+while (<>) {
+	chomp;
+	my $line = $_;
+	my @row = split "\t";
+
+	if (@row < (URL+1)) {
+		print_error("invalid history format", $line);
+		next;
+	}
+
+	if ($row[ARC_TYPE] eq 'R') {
+		if ($row[REL_PATH]) {
+			push(@reqs, $row[REL_PATH]);
+			print put_file(\@row).reqd_by_pred(\@row).";\n";
+		} else {
+			print STDERR "no rel_path required by $row[URL]\n";
+		}
+
+		next;
+	}
+
+	if (@reqs) {
+		print ">> $prev[URL] ".reqs_pred(\@reqs).";\n";
+		@reqs = ();
+	}
+
+	if ($row[REL_PATH]) {
+		print put_file(\@row).";\n";
+	}
+
+	print put_url(\@row).";\n";
+
+	@prev = @row;
+}
