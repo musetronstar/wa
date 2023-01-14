@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 # web archive a file of one non-duplicate URL per line
 
 # optional directory override
