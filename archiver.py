@@ -14,9 +14,7 @@ class archiver:
         self.tags = tags
         self.wgetopts = [
             '-nH', '--no-check-certificate', '--timeout=5',
-            '--tries=2',
-            # workaround - OpenSSL: error:141A318A:SSL routines:tls_process_ske_dhe:dh key too small
-            '--ciphers=DEFAULT:!DH'
+            '--tries=2'
         ]
         self.setconfig(conf)
 
