@@ -26,7 +26,7 @@ def die_usage():
     print(__doc__)
     sys.exit(0)
 
-opts, args = getopt(sys.argv[1:], 'hpm:t:d:')
+opts, args = getopt(sys.argv[1:], 'hpmt:d:')
 conf = config()
 
 # archive type S = single file, P = preserve (all reqs), M = mirror
